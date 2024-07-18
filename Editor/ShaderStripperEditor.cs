@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace Sigtrap.Editors.ShaderStripper
 {
-    public class ShaderStripperEditor : EditorWindow, IPreprocessShaders, IPreprocessBuildWithReport, IPostprocessBuildWithReport
+    public class ShaderStripperEditor : EditorWindow, IPreprocessShaders//, IPreprocessBuildWithReport, IPostprocessBuildWithReport
     {
         public const string KEY_LOG = "ShaderStripperLogPath";
         public const string KEY_ENABLE = "ShaderStripperGlobalEnable";
