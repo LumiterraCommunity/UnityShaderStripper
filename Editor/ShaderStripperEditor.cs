@@ -251,7 +251,9 @@ namespace Sigtrap.Editors.ShaderStripper
         #endregion
 
         #region Stripping Callbacks
-        public void OnPreprocessBuild(UnityEditor.Build.Reporting.BuildReport report)
+        // public void OnPreprocessBuild(UnityEditor.Build.Reporting.BuildReport report)
+        //why rename OnPreprocessBuild to StartStrip? for not strip shader when build head package
+        public void StartStrip()
         {
             _logPath = EditorPrefs.GetString(KEY_LOG);
             _enabled = GetEnabled();
@@ -387,7 +389,8 @@ namespace Sigtrap.Editors.ShaderStripper
                 }
             }
         }
-        public void OnPostprocessBuild(UnityEditor.Build.Reporting.BuildReport report)
+        // public void OnPostprocessBuild(UnityEditor.Build.Reporting.BuildReport report)
+        public void EndStrip()
         {
             if (!_enabled) return;
 
