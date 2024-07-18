@@ -453,6 +453,8 @@ namespace Sigtrap.Editors.ShaderStripper
         static List<string> _tempRequestedKeywordsToMatch = new List<string>();
         static List<string> _tempRequestedKeywordsToMatchCached = new List<string>();
         static List<string> _tempCollectedKeywordsSorted = new List<string>();
+        static HashSet<string> _tempCollectedKeys = new HashSet<string>();
+
         protected override bool StripCustom(Shader shader, ShaderSnippetData passData, IList<ShaderCompilerData> variantData)
         {
             // Don't strip anything if no collections present
@@ -487,50 +489,40 @@ namespace Sigtrap.Editors.ShaderStripper
                         foreach (var sk in sks)
                         {
                             string n = GetKeywordName(sk);
-                            bool add = true;
-                            // Don't look for VR or instanced variants
-                            if (_tempExcludes.Count > 0)
-                            {
-                                if (_tempExcludes.Contains(n))
-                                {
-                                    add = false;
-                                }
-                            }
-                            if (add)
-                            {
-                                _tempRequestedKeywordsToMatchCached.Add(n);
-                            }
+                            _tempRequestedKeywordsToMatchCached.Add(n);
                         }
                         bool variantMatched = false;
 
-                        // Loop over cached variants
+                        // 只有当前变体是采集配置中当前shader 当天pass中的任意一种变体的子集时说明要保留
+                        // 为什么是子集 采集配置的会保留顶点和片段的所有关键字 这里的变体顶点和片段是拆开来编译的
                         foreach (var collectedVariant in collectedPassVariants)
                         {
-                            // Must match ALL keywords
-                            _tempRequestedKeywordsToMatch.Clear();
-                            _tempRequestedKeywordsToMatch.AddRange(_tempRequestedKeywordsToMatchCached);
+                            _tempCollectedKeys.Clear();
 
-                            // Early out (no match) if keyword counts don't match
-                            if (_tempRequestedKeywordsToMatch.Count != collectedVariant.keywords.Length) continue;
+                            foreach (string k in collectedVariant.keywords)
+                            {
+                                _tempCollectedKeys.Add(k);
+                            }
+                            // _tempCollectedKeys.AddRange(collectedVariant.keywords); error
 
-                            // Early out (match) if both have no keywords
-                            if (_tempRequestedKeywordsToMatch.Count == 0 && collectedVariant.keywords.Length == 0)
+                            // 当前变体没有关键字，直接保留 因为是采集配置中的所有子集
+                            if (_tempRequestedKeywordsToMatchCached.Count == 0)
                             {
                                 variantMatched = true;
                                 break;
                             }
 
-                            // Check all keywords
-                            _tempCollectedKeywordsSorted.Clear();
-                            _tempCollectedKeywordsSorted.AddRange(collectedVariant.keywords);
-                            _tempCollectedKeywordsSorted.Sort((a, b) => { return string.CompareOrdinal(a, b); });
-                            foreach (var k in _tempCollectedKeywordsSorted)
+                            bool allContains = true;
+                            foreach (string k in _tempRequestedKeywordsToMatchCached)
                             {
-                                bool keywordMatched = _tempRequestedKeywordsToMatch.Remove(k);
-                                if (!keywordMatched) break;
+                                if (!_tempCollectedKeys.Contains(k))
+                                {
+                                    allContains = false;
+                                    break;
+                                }
                             }
-                            // If all keywords removed, all keywords matched
-                            if (_tempRequestedKeywordsToMatch.Count == 0)
+
+                            if (allContains)
                             {
                                 variantMatched = true;
                                 break;
