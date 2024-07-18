@@ -39,7 +39,7 @@ namespace Sigtrap.Editors.ShaderStripper {
 		bool _valid = false;
 		bool _dirty = false;
 
-		#region Serialization
+        #region Serialization
 		// Automagically pick up new collections which have overwritten existing ones
 		public void OnAfterDeserialize(){
 			_dirty = true;
@@ -47,9 +47,9 @@ namespace Sigtrap.Editors.ShaderStripper {
 		public void OnBeforeSerialize(){
 			_dirty = true;
 		}
-		#endregion
+        #endregion
 
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
 		static readonly string[] VR_KEYWORDS = new string[]{
 			"UNITY_SINGLE_PASS_STEREO", "STEREO_INSTANCING_ON", "STEREO_MULTIVIEW_ON"
 		};
@@ -109,7 +109,7 @@ namespace Sigtrap.Editors.ShaderStripper {
 					(Application.dataPath + AssetDatabase.GetAssetPath(c)).Replace("AssetsAssets","Assets")
 				));
 
-				#region Pre-process to get rid of mid-list line breaks
+                #region Pre-process to get rid of mid-list line breaks
 				var yaml = new List<string>();
 
 				// Find shaders list
@@ -136,7 +136,7 @@ namespace Sigtrap.Editors.ShaderStripper {
 				}
                 #endregion
 
-				#region Iterate over shaders
+                #region Iterate over shaders
 				for (i=0; i<yaml.Count; ++i){
 					string y = yaml[i];
 					if (yaml[i].Contains("first:")){
@@ -480,7 +480,7 @@ namespace Sigtrap.Editors.ShaderStripper {
 			}
 			_dirty = false;
 		}
-        #endif
+#endif
     }
 }
 #endif

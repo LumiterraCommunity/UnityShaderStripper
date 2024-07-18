@@ -42,7 +42,7 @@ namespace Sigtrap.Editors.ShaderStripper {
 		List<BuiltinShaderDefine> _keptPlatformKeywords = new List<BuiltinShaderDefine>();
 		int _rawCount, _keptCount;
 
-		#region GUI
+        #region GUI
 		bool GetEnabled(){
 			if (EditorPrefs.HasKey(KEY_ENABLE)){
 				return EditorPrefs.GetBool(KEY_ENABLE);
@@ -201,9 +201,9 @@ namespace Sigtrap.Editors.ShaderStripper {
 				so.ApplyModifiedProperties();
 			}
 		}
-		#endregion
+        #endregion
 
-		#region Stripping Callbacks
+        #region Stripping Callbacks
 		public void OnPreprocessBuild(UnityEditor.Build.Reporting.BuildReport report){
 			_logPath = EditorPrefs.GetString(KEY_LOG);
 			_enabled = GetEnabled();
@@ -353,7 +353,7 @@ namespace Sigtrap.Editors.ShaderStripper {
 			_keptPlatformKeywordNames.Clear();
 			_keptPlatformKeywords.Clear();
 		}
-		#endregion
+        #endregion
 	}
 }
 #endif
