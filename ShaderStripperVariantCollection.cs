@@ -117,6 +117,8 @@ namespace Sigtrap.Editors.ShaderStripper
         }
         public override void Initialize()
         {
+            _variantsByShader.Clear();
+
             ReplaceOverwrittenCollections();
 
             _tempExcludes.Clear();
