@@ -35,7 +35,7 @@ namespace Sigtrap.Editors.ShaderStripper
         static System.Diagnostics.Stopwatch _swStrip = new System.Diagnostics.Stopwatch();
         static System.Diagnostics.Stopwatch _swBuild = new System.Diagnostics.Stopwatch();
 
-        public int callbackOrder { get { return 0; } }
+        public int callbackOrder { get { return int.MaxValue; } }
         Vector2 _scroll;
         ShaderLog _keptLog = new ShaderLog("SHADERS-KEPT");
         ShaderLog _allKeywords = new ShaderLog("KEYWORDS");
@@ -44,7 +44,7 @@ namespace Sigtrap.Editors.ShaderStripper
         ShaderLog _keptPlatformKeywordNames = new ShaderLog("PLATFORM-KEYWORDS-KEPT");
         List<BuiltinShaderDefine> _allPlatformKeywords = new List<BuiltinShaderDefine>();
         List<BuiltinShaderDefine> _keptPlatformKeywords = new List<BuiltinShaderDefine>();
-        int _rawCount, _keptCount;
+        static int _rawCount, _keptCount;
 
         #region GUI
         bool GetEnabled()
@@ -258,6 +258,9 @@ namespace Sigtrap.Editors.ShaderStripper
 
             if (_enabled)
             {
+                _rawCount = 0;
+                _keptCount = 0;
+
                 Debug.Log("Initialising ShaderStrippers");
                 if (!string.IsNullOrEmpty(_logPath))
                 {
