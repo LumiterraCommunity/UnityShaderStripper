@@ -176,7 +176,39 @@ namespace Sigtrap.Editors.ShaderStripper
                     if (yaml[i].Contains("first:"))
                     {
                         string guid = GetValueFromYaml(y, "guid");
-                        Shader s = AssetDatabase.LoadAssetAtPath<Shader>(AssetDatabase.GUIDToAssetPath(guid));
+                        string assetPath = AssetDatabase.GUIDToAssetPath(guid);
+                        Shader s = AssetDatabase.LoadAssetAtPath<Shader>(assetPath);
+
+                        //guid为内置资源
+                        if (s == null)
+                        {
+                            string strFid = GetValueFromYaml(y, "fileID");
+                            if (long.TryParse(strFid, out long targetFid))
+                            {
+                                Object[] assets = AssetDatabase.LoadAllAssetsAtPath(assetPath);
+                                if (assets != null && assets.Length > 0)
+                                {
+                                    foreach (Object a in assets)
+                                    {
+                                        if (AssetDatabase.TryGetGUIDAndLocalFileIdentifier(a, out string _, out long fid))
+                                        {
+                                            if (fid != targetFid)
+                                            {
+                                                continue;
+                                            }
+
+                                            if (a is not Shader shader)
+                                            {
+                                                continue;
+                                            }
+
+                                            s = shader;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
 
                         // Move to variants contents (skip current line, "second:" and "variants:")
                         i += 3;
