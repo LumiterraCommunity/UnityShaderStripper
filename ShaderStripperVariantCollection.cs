@@ -213,6 +213,20 @@ namespace Sigtrap.Editors.ShaderStripper
                         // Move to variants contents (skip current line, "second:" and "variants:")
                         i += 3;
                         indent = GetYamlIndent(yaml[i]);
+
+                        //first: {fileID: -6465566751694194690, guidxxx 这行可能太长会分行需要处理 有个规律是keywords和passType的GetYamlIndent必定是一样的
+                        //  - first: {fileID: -6465566751694194690, guid: 1c658274f9a314546be62e32eea23521,
+                        //      type: 3}
+                        //    second:
+                        //      variants:
+                        //      - keywords: 
+                        //        passType: 0
+                        if (indent != GetYamlIndent(yaml[i + 1]))
+                        {
+                            i++;
+                            indent = GetYamlIndent(yaml[i]);
+                        }
+
                         var sv = new ShaderVariantCollection.ShaderVariant();
                         for (; i < yaml.Count; ++i)
                         {
